@@ -1,0 +1,17 @@
+# Configuración de las funciones seguras (Edge Functions).
+#
+# verify_jwt = false NO significa que sean públicas: cada función valida por sí misma el token
+# de sesión (identificar + tieneRol en _shared/comun.ts) antes de hacer cualquier cosa.
+# "iniciar-sesion" es la única que se llama sin sesión, y solo sirve para autenticarse.
+
+[functions.iniciar-sesion]
+verify_jwt = false
+
+[functions.empresas]
+verify_jwt = false
+
+[functions.colaboradores]
+verify_jwt = false
+
+[functions.envios]
+verify_jwt = false

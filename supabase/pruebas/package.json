@@ -1,0 +1,11 @@
+{
+  "name": "pruebas-base-de-datos",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node probar.mjs"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.16"
+  }
+}
