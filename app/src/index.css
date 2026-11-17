@@ -1,0 +1,74 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+/* Identidad visual. Para cambiar el color de marca basta con editar la escala "marca". */
+@theme {
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
+
+  --color-fondo: #fafbfc;
+  --color-tinta: #0f172a;
+  --color-suave: #4a5468;
+  --color-tenue: #8a93a5;
+  --color-borde: #e6e9ee;
+
+  --color-marca-50: #ecfdf8;
+  --color-marca-100: #d1faee;
+  --color-marca-200: #a7f3dd;
+  --color-marca-500: #14b8a0;
+  --color-marca-600: #0d9488;
+  --color-marca-700: #0f766e;
+  --color-marca-800: #115e59;
+
+  --radius-tarjeta: 20px;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--color-tinta);
+  background: var(--color-fondo);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+
+button,
+[role='button'],
+select,
+summary {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-marca-600);
+  outline-offset: 2px;
+}
+
+@keyframes aparecer {
+  /* Solo se anima la posición: el contenido nunca queda invisible aunque la animación se pause. */
+  from {
+    transform: translateY(8px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.aparecer {
+  animation: aparecer 0.28s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aparecer {
+    animation: none;
+  }
+}

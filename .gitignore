@@ -1,0 +1,14 @@
+# Dependencias y compilados
+node_modules/
+dist/
+
+# Credenciales: NUNCA se suben al repositorio
+.env
+.env.*
+!.env.example
+
+# Archivos locales
+.claude/
+*.log
+.DS_Store
+Thumbs.db

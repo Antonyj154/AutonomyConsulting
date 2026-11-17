@@ -1,0 +1,46 @@
+# Publica la aplicación (app/) en GitHub Pages en cada push a main.
+# Las dos variables son PÚBLICAS por diseño (URL del proyecto y llave anon).
+# La llave service_role NUNCA va aquí: solo vive en las Edge Functions de Supabase.
+#
+# El token de esta automatización no puede activar Pages con source "GitHub Actions"
+# (POST /pages → 403). En su lugar se publica app/dist, incluido 404.html, en la
+# rama gh-pages. GitHub activa Pages al recibir esa rama.
+# Sitio: https://antonyj154.github.io/AutonomyConsulting/
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    env:
+      VITE_SUPABASE_URL: https://pzkijzgpvafnhqcxaycl.supabase.co
+      VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6a2lqemdwdmFmbmhxY3hheWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5MjM3OTIsImV4cCI6MjExMDQ5OTc5Mn0.BkQ0CjmZ-azoAKl4W13JSlfODbqX0enarjpCZZGex-I
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: cp dist/index.html dist/404.html
+      - name: Publicar en la rama gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./app/dist
