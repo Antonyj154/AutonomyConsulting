@@ -1,6 +1,11 @@
 # Publica la aplicación (app/) en GitHub Pages en cada push a main.
 # Las dos variables son PÚBLICAS por diseño (URL del proyecto y llave anon).
 # La llave service_role NUNCA va aquí: solo vive en las Edge Functions de Supabase.
+#
+# El token de esta automatización no puede activar Pages con source "GitHub Actions"
+# (POST /pages → 403). En su lugar se publica app/dist, incluido 404.html, en la
+# rama gh-pages. GitHub activa Pages al recibir esa rama.
+# Sitio: https://antonyj154.github.io/AutonomyConsulting/
 name: Publicar en GitHub Pages
 
 on:
@@ -9,16 +14,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -36,17 +39,8 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: cp dist/index.html dist/404.html
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - name: Publicar en la rama gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: app/dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./app/dist
